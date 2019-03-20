@@ -1,0 +1,37 @@
+---
+# tasks file for install_elasticsearch
+- name: Fetch Java version
+  shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
+  register: java_version
+
+- name: check to ensure that java version is greater than or equal to 1.8
+  assert:
+    that:
+      - java_version.stdout | version_compare({{ required_java_version }}, '>=')
+
+- name: download elasticsearch {{ elasticsearch_version }}
+  get_url:
+   url: "{{ source_url }}"
+   dest: "{{ download_file }}"
+   validate_certs: no
+
+- name: Extract and install elasticsearch into {{ installation_dir }}/{{ installer_file_name }}
+  unarchive: "copy=no src={{ download_file }} dest={{ installation_root_dir }} creates={{ installation_dir }}"
+
+- name: Change ownership of installation directory
+  file:
+   path={{ installation_dir }}
+   owner={{ install_user }}
+   group={{ install_group }}
+   recurse=yes
+   mode=0755
+   state=directory
+
+- name: copy elastictic search service to /etc/init.d
+  copy: src="{{ role_path }}/files/elasticsearch" dest="/etc/init.d/" owner="root" group="root" mode="0755"
+
+- name: add service to chkconfig list and start as daemon
+  shell: chkconfig --add /etc/init.d/elasticsearch && service elasticsearch start
+
+- name: Delete downloaded file {{ download_file }}
+  file: path={{ download_file }} state=absent
