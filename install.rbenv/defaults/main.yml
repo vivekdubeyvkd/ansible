@@ -1,0 +1,13 @@
+---
+rbenv_group: "<groupname>"
+rbenv_user: "<username>"
+rbenv_root: "/opt/rbenv"
+rbenv_global_ruby_version: "2.2.2"
+rbenv_global_gems:
+  - { name: "bundler", version: "" }
+  - { name: "iconv", version: "" }
+rbenv_other_ruby_versions:
+  - { version: "2.1.2" }
+rbenv_keep_group_write: yes
+rbenv_keep_group_write_by_cron: yes
+required_curl_version: "7.29"
