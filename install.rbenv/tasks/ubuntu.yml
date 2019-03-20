@@ -1,0 +1,6 @@
+---
+- name: Install missing packages for Ubuntu hosts
+  apt: name={{ item }} update_cache=yes state=present
+  with_items:
+    - libreadline-dev
+    - ruby-dev
