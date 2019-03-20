@@ -1,0 +1,22 @@
+---
+# tasks file for install_gradle
+- name: download gradle {{ gradle_version }}
+  get_url:
+   url: https://services.gradle.org/distributions/gradle-{{ gradle_version }}-bin.zip
+   dest: /tmp/gradle-{{ gradle_version }}-bin.zip
+   validate_certs: no
+
+- name: Extract and install gradle into /opt/gradle-{{ gradle_version }}
+  unarchive: "copy=no src=/tmp/gradle-{{ gradle_version }}-bin.zip dest=/opt creates=/opt/gradle-{{ gradle_version }}"
+
+- name: Change ownership of installation directory
+  file:
+   path=/opt/gradle-{{ gradle_version }}
+   owner=<username>
+   group=<groupname>
+   recurse=yes
+   mode=0755
+   state=directory
+
+- name: Create symbolic link to make it available on PATH variable
+  file: "path=/usr/bin/gradle src=/opt/gradle-{{ gradle_version }}/bin/gradle state=link force=yes"
