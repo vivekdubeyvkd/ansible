@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+# elasticsearch
+#
+# chkconfig: 345 70 30
+# description: elasticsearch engine
+# processname: elasticsearch
+
+# Source function library.
+##. /etc/init.d/functions
+
+RETVAL=0
+prog="elasticsearch"
+LOCKFILE=/var/lock/subsys/$prog
+
+# Declare variables for GlassFish Server
+ELASTICSEARCH_DIR=/opt/elasticsearch-5.5.2/
+ELASTICSEARCH_USER=<username>
+START_CMD=${ELASTICSEARCH_DIR}/bin/elasticsearch
+PROCESS_ID="$(ps -ef|grep elasticsearch|grep -v "grep"|awk '{print $2}')"
+
+
+start() {
+        echo -n "Starting $prog: "
+        test -f $LOCKFILE && echo "already running" && exit 0
+        su - ${ELASTICSEARCH_USER} -c "${START_CMD} -d"
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && touch $LOCKFILE
+        echo
+        return $RETVAL
+}
+
+stop() {
+        echo -n "Shutting down $prog: "
+        rm -f $LOCKFILE
+        kill -9 ${PROCESS_ID} 1>/dev/null 2>&1 && echo "success"
+        RETVAL=$?
+        [ $RETVAL -eq 0 ] && rm -f $LOCKFILE
+        #echo
+        return $RETVAL
+}
+
+status() {
+        echo -n "Checking $prog status: "
+        test -f $LOCKFILE && echo "running"
+        test ! -f $LOCKFILE && echo "stopped"
+        RETVAL=$?
+        return $RETVAL
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: $prog {start|stop|status}"
+        exit 1
+        ;;
+esac
+exit $RETVAL
