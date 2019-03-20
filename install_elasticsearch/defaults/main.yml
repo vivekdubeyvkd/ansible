@@ -1,0 +1,14 @@
+---
+# defaults file for install.elasticsearch
+elasticsearch_version: "5.5.2"
+install_user: "<username>"
+installer_file_name: "elasticsearch-{{ elasticsearch_version }}"
+installer_file_extension: "tar.gz"
+installer_file: "{{ installer_file_name }}.{{ installer_file_extension }}"
+source_url: "https://artifacts.elastic.co/downloads/elasticsearch/{{ installer_file }}"
+download_dir: "/tmp"
+required_java_version: "1.7"
+install_group: "Wheel"
+installation_root_dir: "/opt"
+download_file: "{{ download_dir }}/{{ installer_file }}"
+installation_dir: "{{ installation_root_dir }}/{{ installer_file_name }}"
