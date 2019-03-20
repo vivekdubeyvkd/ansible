@@ -1,0 +1,5 @@
+---
+  - hosts: build
+    become: yes
+    roles:
+      - { role: "install_gradle" }
