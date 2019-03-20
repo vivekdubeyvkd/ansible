@@ -13,7 +13,6 @@ RETVAL=0
 prog="elasticsearch"
 LOCKFILE=/var/lock/subsys/$prog
 
-# Declare variables for GlassFish Server
 ELASTICSEARCH_DIR=/opt/elasticsearch-5.5.2/
 ELASTICSEARCH_USER=<username>
 START_CMD=${ELASTICSEARCH_DIR}/bin/elasticsearch
