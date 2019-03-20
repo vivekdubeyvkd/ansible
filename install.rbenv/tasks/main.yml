@@ -1,0 +1,63 @@
+
+---
+# install_rbenv playbook
+- name: Fetch curl version
+  shell: curl -V|grep -ow "7.[0-9][0-9]"|sort -u
+  args:
+    warn: false
+  register: curl_version
+
+- name: check to ensure that curl version is greater than or equal to {{ required_curl_version }}
+  assert:
+    that:
+      - curl_version.stdout | version_compare({{ required_curl_version }}, '>=')
+
+# Install missing packages to install Ruby
+- include: ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+  tags: missing_packages
+
+- include: redhat.yml
+  when: ansible_distribution == 'RedHat'
+  tags: missing_packages
+
+- name: Install rbenv
+  git: repo="https://github.com/rbenv/rbenv.git"
+       dest={{ rbenv_root }}
+       version=master
+       update=no
+
+- name: Create /etc/profile.d/rbenv.sh
+  shell: "echo 'export RBENV_ROOT={{ rbenv_root }}\nexport PATH={{ rbenv_root }}/bin:$PATH\neval \"$(rbenv init -)\"' > /etc/profile.d/rbenv.sh;"
+  args:
+     creates: /etc/profile.d/rbenv.sh
+
+- name: Install ruby_build
+  git: repo="https://github.com/rbenv/ruby-build.git"
+       dest={{ rbenv_root }}/plugins/ruby-build
+       version=master
+       update=no
+
+- name: Install the global ruby "{{rbenv_global_ruby_version}}"
+  shell: "export RBENV_ROOT={{ rbenv_root }}; export PATH=$RBENV_ROOT/bin:$PATH;export RUBY_BUILD_CURL_OPTS=--tlsv1; rbenv install {{ rbenv_global_ruby_version }}; rbenv global {{ rbenv_global_ruby_version }}"
+  args:
+     creates: "{{ rbenv_root }}/versions/{{ rbenv_global_ruby_version }}/"
+
+- name: Install other versions of ruby
+  shell: "export RBENV_ROOT={{ rbenv_root }}; export PATH=$RBENV_ROOT/bin:$PATH;export RUBY_BUILD_CURL_OPTS=--tlsv1; rbenv install {{ item.version }};"
+  args:
+     creates: "{{ rbenv_root }}/versions/{{ item.version }}/"
+  with_items: "{{ rbenv_other_ruby_versions }}"
+  when: rbenv_other_ruby_versions is defined
+
+- name: Install gems for the global ruby
+  gem: name={{ item.name }} executable={{ rbenv_root }}/shims/gem user_install=no version={{ item.version }}
+  with_items: "{{ rbenv_global_gems }}"
+  when: rbenv_global_gems is defined
+
+- name: Change RBENV_ROOT owner to "{{ rbenv_user }}":"{{ rbenv_group }}"
+  file: path={{ rbenv_root }} owner={{ rbenv_user }} group={{ rbenv_group }} mode=g+w recurse=yes
+
+- name: ensure RBENV_ROOT belongs to "{{ rbenv_user }}":"{{ rbenv_group }}"
+  cron: name="keep RBENV_ROOT owner" job="chown -R {{ rbenv_user }}:{{ rbenv_group}} {{ rbenv_root }}" weekday=6
+  when: rbenv_keep_group_write is defined and rbenv_keep_group_write_by_cron
