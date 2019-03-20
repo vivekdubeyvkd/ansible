@@ -1,1 +1,9 @@
 localhost
+
+[test]
+testserver1
+testserver1
+
+[build]
+buildserver1
+buildserver1
