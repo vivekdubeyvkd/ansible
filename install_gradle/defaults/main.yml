@@ -1,0 +1,3 @@
+---
+# defaults file for install.gradle
+gradle_version: "3.1"
