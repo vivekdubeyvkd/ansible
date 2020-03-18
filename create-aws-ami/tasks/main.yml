@@ -1,0 +1,30 @@
+---
+# tasks file for create-aws-ami
+- name: create AWS AMI from an EC2 instance
+  ec2_ami:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    instance_id: "{{ source_instance_id }}"
+    state: present
+    wait: yes
+    name: "{{ new_ami_base_name }}-{{ new_ami_name }}"
+    device_mapping:
+      - device_name: /dev/sda1
+        volume_type: io1
+        iops: 3000
+        volume_size: 100
+      - device_name: /dev/sda2
+        snapshot_id: "{{ snapshot_id }}"
+        volume_type: io1
+        iops: 3000
+        volume_size: 100
+    tags:
+      Name: "{{ new_ami_base_name }}-{{ new_ami_name }}"
+      amiquery_enabled: "true"
+      intuit:ami:managed: ""
+      intuit:ami:creator: "{{ creator_name }}"
+      intuit:ami:source: "{{ base_ami }}"
+      intuit:ami:state: "available"
+      intuit:ami:version:os: "{{ os_version_name }}"
+    launch_permissions:
+      user_ids: ['{{ sharewith_aws_account  }}']
