@@ -1,0 +1,15 @@
+---
+# defaults file for create-ec2-machine
+instance_type: <instance type>
+security_group: <security group name to be attached the EC2 instance>
+image: <source image name using which EC2 instance needs to be created>
+keypair: <key name>
+region: <AWS region>
+vpc_subnet_id: <subnet to be attached to EC2 instance>
+assign_public_ip: yes
+instance_name: <name of EC2 instance to be created>
+count: 1
+aws_access_key: <add the value after cloning the repo>
+aws_secret_key: <add the value after cloning the repo>
+iam_role: <name of the IAM role to be attached to EC2 machine>
+snapshot_id: <snaphot id using which volume needs to be created>
