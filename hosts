@@ -1,5 +1,8 @@
 localhost
 
+[local]
+localhost
+
 [test]
 testserver1
 testserver1
