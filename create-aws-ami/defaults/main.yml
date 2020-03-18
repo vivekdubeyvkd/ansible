@@ -1,0 +1,9 @@
+---
+# defaults file for create-aws-ami
+sharewith_aws_account: <AWS account id>
+aws_access_key: <add a valid aws_access_key value here>
+aws_secret_key: <add a valid aws_secret_key value here>
+snapshot_id: <snapshot to be used for secondary device mapping>
+creator_name: <name of the person>
+os_version_name: <ami OS version>
+new_ami_base_name: <prefix for the new AMI to be created>
