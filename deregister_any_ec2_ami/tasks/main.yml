@@ -1,0 +1,9 @@
+---
+# tasks file for deregister_ec2_ami
+- name: "deregister any AWS AMI {{ ec2_ami_id_to_deregister }}"
+  ec2_ami:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    image_id: "{{ ec2_ami_id_to_deregister }}"
+    delete_snapshot: True
+    state: absent
