@@ -1,0 +1,6 @@
+---
+  - hosts: my
+    connection: local
+    gather_facts: False
+    roles:
+      - { role: "deregister_any_ec2_ami" }
