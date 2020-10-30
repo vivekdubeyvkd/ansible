@@ -1,0 +1,14 @@
+---
+# get secondary volume before creating the qbdtdev AMI
+- name: get volume from the EC2 instance
+  ec2_vol:
+    aws_access_key: "{{ aws_access_key }}"
+    aws_secret_key: "{{ aws_secret_key }}"
+    region: "{{ region }}" 
+    instance: "{{ source_instance_id }}"
+    snapshot: "{{ snapshot_id }}"
+    device_name: /dev/sda2
+  register: ec2_vol
+
+- debug:
+    msg: "{{ ec2_vol.volume_id }}"
