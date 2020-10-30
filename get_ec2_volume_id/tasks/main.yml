@@ -7,7 +7,7 @@
     region: "{{ region }}" 
     instance: "{{ source_instance_id }}"
     snapshot: "{{ snapshot_id }}"
-    device_name: /dev/sda2
+    device_name: "{{ my_device_name }}"
   register: ec2_vol
 
 - debug:
