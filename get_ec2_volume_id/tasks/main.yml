@@ -1,5 +1,5 @@
 ---
-# get secondary volume before creating the qbdtdev AMI
+# get secondary volume ID
 - name: get volume from the EC2 instance
   ec2_vol:
     aws_access_key: "{{ aws_access_key }}"
