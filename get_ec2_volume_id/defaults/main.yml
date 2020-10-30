@@ -4,3 +4,4 @@ region: us-west-3
 aws_access_key: <add a valid aws_access_key value here>
 aws_secret_key: <add a valid aws_secret_key value here>
 snapshot_id: <snapshot id>
+source_instance_id: <source EC2 instance>
