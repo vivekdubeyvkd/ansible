@@ -13,7 +13,7 @@
 - debug:
     msg: "{{ ec2_vol.volume_id }}"
     
-# remove secondary volume before creating the qbdtdev AMI
+# remove secondary volume, this will remove the volume only when it is not in use by any instance
 - name: Remove secondary volume from the EC2 instance
   ec2_vol:
     aws_access_key: "{{ aws_access_key }}"
